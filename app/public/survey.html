@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Survey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS & JS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="jumbotron">
+            <h1 class="text-center">
+                <span class="fa fa-fire"></span> Finder</h1>
+            <hr>
+            <br>
+
+            <div class="text-center">
+                <a href="/">
+                    <button class="btn btn-lg btn-primary">
+                        <span class="fa fa-list-alt"></span> Home</button>
+                </a>
+            </div>
+
+        </div>
+
+        <form id=''>
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="reserve-name">Name</label>
+                    <input type="text" class="form-control" id="reserve-name">
+                </div>
+
+                <div id="question-container">
+
+                </div>
+
+
+                <!-- <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                    <label class="form-check-label" for="inlineRadio1">1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                    <label class="form-check-label" for="inlineRadio2">2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
+                    <label class="form-check-label" for="inlineRadio3">3 (disabled)</label>
+
+
+                </div> -->
+
+            </div>
+            <button type='submit' id="submit" class="btn btn-lg btn-primary">Submit</button>
+        </form>
+
+    </div>
+
+</body>
+
+</html>
+
+<!-- BELOW CODE IS CRITICAL. IT HANDLES HOW FORM DATA IS SENT TO OUR SERVER -->
+<script type="text/javascript">
+
+
+    var questions = [
+        'Your mind is always buzzing with unexplored ideas and plans.',
+        'Generally speaking, you rely more on your experience than your imagination.',
+        'You find it easy to stay relaxed and focused even when there is some pressure.',
+        'You rarely do something just out of sheer curiosity.',
+        'People can rarely upset you.',
+        'It is often difficult for you to relate to other people’s feelings.',
+        'In a discussion, truth should be more important than people’s sensitivities.',
+        'You rarely get carried away by fantasies and ideas.',
+        'You think that everyone’s views should be respected regardless of whether they are supported by facts or not.',
+        'You feel more energetic after spending time with a group of people.'
+    ];
+
+
+    questions.forEach(function (item, index) {
+        var html = ((index + 1) + ': ' + item + '<br/>' + '');
+
+
+        for (var i = 1; i < 6; i++) {
+
+            var answerId = ('q' + (index + 1) + 'a' + i);
+
+            html += ('<input type ="radio" class ="answerForQ' + (index + 1) + ' "name ="answerForQ' + (index + 1) + ' " id="' + answerId + ' " Value="' + i + ' ">' + i);
+
+
+        };
+
+        html += ('<hr/>');
+
+        $('#question-container').append(html);
+
+
+
+    });
+
+
+
+    $("#submit").on("click", function (event) {
+        event.preventDefault();
+
+        // var one = $(".answerForQ1:checked").val();
+        // var two = $(".answerForQ2:checked").val();
+        // var three = $(".answerForQ3:checked").val();
+        // var four = $(".answerForQ4:checked").val();
+        // var five = $(".answerForQ5:checked").val();
+        // var six = $(".answerForQ6:checked").val();
+        // var seven = $(".answerForQ7:checked").val();
+        // var eight = $(".answerForQ8:checked").val();
+        // var nine = $(".answerForQ9:checked").val();
+        // var ten = $(".answerForQ10:checked").val();
+
+        // Here we grab the form elements
+        var newUser = {
+            name: $("#reserve-name").val(),
+            scores: [
+                $(".answerForQ1:checked").val(),
+                $(".answerForQ2:checked").val(),
+                $(".answerForQ3:checked").val(),
+                $(".answerForQ4:checked").val(),
+                $(".answerForQ5:checked").val(),
+                $(".answerForQ6:checked").val(),
+                $(".answerForQ7:checked").val(),
+                $(".answerForQ8:checked").val(),
+                $(".answerForQ9:checked").val(),
+                $(".answerForQ10:checked").val()
+            ],
+        };
+
+        console.log(newUser);
+
+
+        // This line is the magic. It"s very similar to the standard ajax function we used.
+        // Essentially we give it a URL, we give it the object we want to send, then we have a "callback".
+        // The callback is the response of the server. In our case, we set up code in api-routes that "returns" true or false
+        // depending on if a tables is available or not.
+
+        $.post("/api/friends", newUser,
+            function (data) {
+
+
+                alert('Your best match is: ' + data.name);
+
+                var modal =
+
+                    // Clear the form when submitting
+                    $("#reserve-name").val("");
+                $(".answerForQ1:checked").prop('checked', false);
+                $(".answerForQ2:checked").prop('checked', false);
+                $(".answerForQ3:checked").prop('checked', false);
+                $(".answerForQ4:checked").prop('checked', false);
+                $(".answerForQ5:checked").prop('checked', false);
+                $(".answerForQ6:checked").prop('checked', false);
+                $(".answerForQ7:checked").prop('checked', false);
+                $(".answerForQ8:checked").prop('checked', false);
+                $(".answerForQ9:checked").prop('checked', false);
+                $(".answerForQ10:checked").prop('checked', false);
+
+
+
+
+
+
+            });
+
+
+
+    });
+
+</script>
